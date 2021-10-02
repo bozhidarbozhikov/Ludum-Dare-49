@@ -11,8 +11,13 @@ GameObject:
   - component: {fileID: 2474347600712872412}
   - component: {fileID: 1583434858223091321}
   - component: {fileID: 3611195122903632563}
+<<<<<<< HEAD
   - component: {fileID: -2145645200712693682}
   m_Layer: 8
+=======
+  - component: {fileID: -4898038997642136776}
+  m_Layer: 0
+>>>>>>> 6eb7b6caae2cfcaae3116906a0a46729d9264cc8
   m_Name: Stone Cube 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +87,11 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+<<<<<<< HEAD
 --- !u!65 &-2145645200712693682
+=======
+--- !u!65 &-4898038997642136776
+>>>>>>> 6eb7b6caae2cfcaae3116906a0a46729d9264cc8
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
