@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
+    public int damage;
     Vector3 shootDir = Vector3.right;
-
     GameObject[] enemies;
+    public GoblinHealth goblinHp;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,7 @@ public class Shooting : MonoBehaviour
 
     void HitEnemy()
     {
+        goblinHp.TakeDamage(damage);
         Debug.Log("Hit");
     }
 }
