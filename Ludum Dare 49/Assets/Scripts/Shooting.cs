@@ -5,6 +5,8 @@ using UnityEngine;
 public class Shooting : MonoBehaviour
 {
     public int damage;
+    public float fireRate;
+    private float timer;
     Vector3 shootDir = Vector3.right;
     GameObject[] enemies;
     public GoblinHealth goblinHp;
@@ -18,14 +20,17 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        timer += Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Space) && timer >= fireRate)
         {
             CheckForEnemyInSight(shootDir);
+            timer = 0f;
         }
     }
 
     void CheckForEnemyInSight(Vector3 direction)
     {
+        List<GameObject> detectedEnemies = new List<GameObject>();
         foreach (GameObject enemy in enemies)
         {
             if (direction.x != 0 && transform.position.z == enemy.transform.position.z)
