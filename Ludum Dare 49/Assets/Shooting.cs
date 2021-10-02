@@ -30,30 +30,30 @@ public class Shooting : MonoBehaviour
         {
             if (direction.x != 0 && transform.position.z == enemy.transform.position.z)
             {
-                Debug.Log("Enemy on X");
-                TryShoot(enemy.transform.position);
+                Shoot(enemy.transform.position);
             }
             else if (direction.z != 0 && transform.position.x == enemy.transform.position.x)
             {
-                TryShoot(enemy.transform.position);
+                Shoot(enemy.transform.position);
             }
         }
     }
 
-    void TryShoot(Vector3 enemyPosition)
+    void Shoot(Vector3 enemyPosition)
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, enemyPosition, out hit))
+        if (Physics.Raycast(transform.position, enemyPosition - transform.position, out hit))
         {
-            Debug.Log(Physics.Raycast(transform.position, enemyPosition, out hit));
-
+            if (hit.transform.CompareTag("Enemy"))
+            {
+                HitEnemy();
+            }
         }
+    }
 
-
-        /*if (hit.transform.CompareTag("Enemy"))
-        {
-            Debug.Log("Hit enemy");
-        }*/
+    void HitEnemy()
+    {
+        Debug.Log("Hit");
     }
 }
