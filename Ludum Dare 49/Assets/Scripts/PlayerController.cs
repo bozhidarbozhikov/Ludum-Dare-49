@@ -12,6 +12,12 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask whatStopsMovement;
 
+    private void OnEnable()
+    {
+        movePoint.position = transform.position;
+        belowPoint.position = transform.position - new Vector3(0f, -1.25f, 0f);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,17 +30,20 @@ public class PlayerController : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, movePoint.position, moveSpeed * Time.deltaTime);
 
-        //transform.eulerAngles = Vector3.RotateTowards(transform.rotation.eulerAngles, rotateTo, 6.28318531f, rotateSpeed * Time.deltaTime);
-        //transform.eulerAngles = rotateTo;
-
         if (Vector3.Distance(transform.position, movePoint.position) <= .05f)
         {
             if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f)
             {
+                Collider[] checkMP = Physics.OverlapSphere(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement);
+                Collider[] checkBP = Physics.OverlapSphere(belowPoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement);
 
-                if (Physics.OverlapSphere(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement).Length == 0
-                    && Physics.OverlapSphere(belowPoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement).Length != 0)
-                //if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Horizontal")), 0.6f, whatStopsMovement))
+                if (SteppedOnStair(checkBP))
+                {
+                    StairDown(checkBP, new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f));
+                    return;
+                }
+
+                if (checkMP.Length == 0 && checkBP.Length != 0)
                 {
                     movePoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
                     belowPoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
@@ -42,14 +51,20 @@ public class PlayerController : MonoBehaviour
                     StopAllCoroutines();
                     StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f))), rotateSpeed));
                 }
+                else StairUp(checkMP, new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f));
             }
-
-
             else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f)
             {
-                if (Physics.OverlapSphere(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement).Length == 0
-                    && Physics.OverlapSphere(belowPoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement).Length != 0)
-                //if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.6f, whatStopsMovement))
+                Collider[] checkMP = Physics.OverlapSphere(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement);
+                Collider[] checkBP = Physics.OverlapSphere(belowPoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement);
+
+                if (SteppedOnStair(checkBP))
+                {
+                    StairDown(checkBP, new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f));
+                    return;
+                }
+
+                if (checkMP.Length == 0 && checkBP.Length != 0)
                 {
                     movePoint.position += new Vector3(0f, 0f, Input.GetAxisRaw("Vertical"));
                     belowPoint.position += new Vector3(0f, 0f, Input.GetAxisRaw("Vertical"));
@@ -57,8 +72,66 @@ public class PlayerController : MonoBehaviour
                     StopAllCoroutines();
                     StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f))), rotateSpeed));
                 }
+                else StairUp(checkMP, new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f));
             }
         }
+    }
+
+    void StairUp(Collider[] arr, Vector3 rotateDir)
+    {
+        if (arr.Length != 0)
+        {
+            foreach (Collider col in arr)
+            {
+                if (col.CompareTag("Stair"))
+                {
+                    Stair stair = col.GetComponent<Stair>();
+
+                    if (transform.position.x == stair.lowPoint.x && transform.position.z == stair.lowPoint.z)
+                    {
+                        movePoint.position = stair.highPoint;
+                        belowPoint.position = stair.highPoint - Vector3.up * 1.25f;
+
+                        StopAllCoroutines();
+                        StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(rotateDir)), rotateSpeed));
+                    }
+                }
+            }
+        }
+    }
+    void StairDown(Collider[] arr, Vector3 rotateDir)
+    {
+        if (arr.Length != 0)
+        {
+            foreach (Collider col in arr)
+            {
+                if (col.CompareTag("Stair"))
+                {
+                    Stair stair = col.GetComponent<Stair>();
+
+                    if (transform.position.x == stair.highPoint.x && transform.position.z == stair.highPoint.z)
+                    {
+                        movePoint.position = stair.lowPoint;
+                        belowPoint.position = stair.lowPoint - Vector3.up * 1.25f;
+
+                        StopAllCoroutines();
+                        StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(rotateDir)), rotateSpeed));
+                    }
+                }
+            }
+        }
+    }
+
+    bool SteppedOnStair(Collider[] arr)
+    {
+        foreach (Collider col in arr)
+        {
+            if (col.CompareTag("Stair"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     IEnumerator LerpFunction(Quaternion endValue, float duration)

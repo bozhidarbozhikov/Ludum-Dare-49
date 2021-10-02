@@ -25,7 +25,6 @@ public class Shooting : MonoBehaviour
 
     void CheckForEnemyInSight(Vector3 direction)
     {
-        List<GameObject> detectedEnemies = new List<GameObject>();
         foreach (GameObject enemy in enemies)
         {
             if (direction.x != 0 && transform.position.z == enemy.transform.position.z)

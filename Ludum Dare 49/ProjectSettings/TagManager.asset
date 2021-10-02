@@ -4,13 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Stair
   - Enemy
-  - StopMovement
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - StopMovement
+  - 
   - Water
   - UI
   - 
