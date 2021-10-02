@@ -33,6 +33,6 @@ public class LevelMaker : MonoBehaviour
 
     void PlacePieces(Vector3Int tilePos, int index)
     {
-        Instantiate(objects[index], tilemap.CellToWorld(tilePos) + new Vector3(0.5f, 0, 0.5f), Quaternion.Euler(-90, 0, 0));
+        Instantiate(objects[index], tilemap.CellToWorld(tilePos) + new Vector3(0.5f, index, 0.5f), Quaternion.Euler(-90, 0, 0));
     }
 }
