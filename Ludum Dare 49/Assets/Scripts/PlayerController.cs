@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         movePoint.position = transform.position;
-        belowPoint.position = transform.position - new Vector3(0f, -1.25f, 0f);
+        belowPoint.position = transform.position + new Vector3(0f, -1.25f, 0f);
     }
 
     // Start is called before the first frame update
