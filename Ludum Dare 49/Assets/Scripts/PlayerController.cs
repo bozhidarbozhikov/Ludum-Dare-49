@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed = 5f;
 
     public Transform movePoint;
+    public Transform belowPoint;
 
     public LayerMask whatStopsMovement;
 
@@ -15,7 +16,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         movePoint.parent = null;
-
+        belowPoint.parent = null;
     }
 
     // Update is called once per frame
@@ -30,10 +31,13 @@ public class PlayerController : MonoBehaviour
         {
             if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f)
             {
-                if (Physics.OverlapSphere(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement).Length == 0)
+
+                if (Physics.OverlapSphere(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement).Length == 0
+                    && Physics.OverlapSphere(belowPoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f), 0.33f, whatStopsMovement).Length != 0)
                 //if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Horizontal")), 0.6f, whatStopsMovement))
                 {
                     movePoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
+                    belowPoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
 
                     StopAllCoroutines();
                     StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f))), rotateSpeed));
@@ -41,12 +45,14 @@ public class PlayerController : MonoBehaviour
             }
 
 
-            if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f)
+            else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f)
             {
-                if (Physics.OverlapSphere(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement).Length == 0)
+                if (Physics.OverlapSphere(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement).Length == 0
+                    && Physics.OverlapSphere(belowPoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.33f, whatStopsMovement).Length != 0)
                 //if (!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, 0f, Input.GetAxisRaw("Vertical")), 0.6f, whatStopsMovement))
                 {
                     movePoint.position += new Vector3(0f, 0f, Input.GetAxisRaw("Vertical"));
+                    belowPoint.position += new Vector3(0f, 0f, Input.GetAxisRaw("Vertical"));
 
                     StopAllCoroutines();
                     StartCoroutine(LerpFunction(Quaternion.Euler(GetEulerForRotate(new Vector3(0f, Input.GetAxisRaw("Vertical"), 0f))), rotateSpeed));
