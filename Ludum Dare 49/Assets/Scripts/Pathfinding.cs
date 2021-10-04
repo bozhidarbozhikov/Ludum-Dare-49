@@ -46,7 +46,8 @@ public class Pathfinding : MonoBehaviour
             stairs[i] = stairObjects[i].GetComponent<Stair>();
         }
 
-        animator = transform.GetChild(0).GetComponent<Animator>();
+        if (transform.childCount != 0)
+            animator = transform.GetChild(0).GetComponent<Animator>();
 
         StartCoroutine(FollowPath());
     }

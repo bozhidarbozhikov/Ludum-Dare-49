@@ -20,4 +20,18 @@ public class HitMarker : MonoBehaviour
 
         Destroy(gameObject, duration);
     }
+
+    public void SetUpNoDestroy(Vector3 position)
+    {
+        transform.position = position + new Vector3(0, 0.55f, 0f);
+    }
+
+    public IEnumerator Show(float duration)
+    {
+        GetComponent<MeshRenderer>().enabled = true;
+
+        yield return new WaitForSeconds(duration);
+
+        GetComponent<MeshRenderer>().enabled = false;
+    }
 }

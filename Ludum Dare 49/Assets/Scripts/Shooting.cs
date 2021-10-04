@@ -10,6 +10,8 @@ public class Shooting : MonoBehaviour
     GameObject[] enemies;
     PlayerController playerController;
 
+    bool canShoot = true;
+
     public Transform cast;
     public Material castMat;
     public Texture[] castSprites;
@@ -69,6 +71,8 @@ public class Shooting : MonoBehaviour
     }
     void CheckForEnemyInSight(Vector3 direction)
     {
+        if (!canShoot) return;
+
         bool hitEnemy = false;
 
         foreach (GameObject enemy in enemies)
@@ -191,9 +195,9 @@ public class Shooting : MonoBehaviour
 
         int randomEffect = Random.Range(0, 12);
 
-        int testInt = 0;
+        int testInt = 1;
 
-        switch (testInt)
+        switch (randomEffect)
         {
             case 0:
                 {
@@ -203,7 +207,14 @@ public class Shooting : MonoBehaviour
                 break;
             case 1:
                 {
-                    StartCoroutine(enemy.GetComponent<Pathfinding>().Petrify(castSpellDuration));
+                    if (enemy.name == "Evil Wizard")
+                    {
+
+                    }
+                    else
+                    {
+                        StartCoroutine(enemy.GetComponent<Pathfinding>().Petrify(castSpellDuration));
+                    }
 
                     Debug.Log("Petrified!");
                 }
@@ -274,6 +285,8 @@ public class Shooting : MonoBehaviour
 
     IEnumerator SwitchPositions(Transform enemy)
     {
+        if (enemy.transform.name == "Evil Wizard") yield break;
+
         enemy.GetComponent<Pathfinding>().canMove = false;
 
         yield return new WaitForSeconds(0.2f);
@@ -314,11 +327,13 @@ public class Shooting : MonoBehaviour
         plant.SetActive(true);
         GetComponent<MeshRenderer>().enabled = false;
         firePoint.position -= new Vector3(0, 0.015f, 0);
+        canShoot = false;
 
         yield return new WaitForSeconds(castSpellDuration);
 
         plant.SetActive(false);
         GetComponent<MeshRenderer>().enabled = true;
         firePoint.position += new Vector3(0, 0.015f, 0);
+        canShoot = true;
     }
 }
