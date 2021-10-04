@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 2943048884353169795}
   - component: {fileID: 1095280809682275657}
   - component: {fileID: 6069495523419517107}
-  m_Layer: 0
+  - component: {fileID: -4924547701297809301}
+  m_Layer: 3
   m_Name: Stairs
   m_TagString: Stair
   m_Icon: {fileID: 0}
@@ -96,3 +97,18 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 1353746659569323740, guid: 6c7ff3db5591ca3499481ca99f240300, type: 3}
+--- !u!114 &-4924547701297809301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455723054734093468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 970a266cccf92ee46827948ad1c55ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stairDirection: 0
+  lowPoint: {x: 0, y: 0, z: 0}
+  highPoint: {x: 0, y: 0, z: 0}

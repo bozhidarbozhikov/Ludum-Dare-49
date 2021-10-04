@@ -22,6 +22,11 @@ public class GoblinHealth : MonoBehaviour
         }
     }
 
+    public void Heal(int heal)
+    {
+        currentHealth += heal;
+    }
+
     public void Die()
     {
         Destroy(gameObject);

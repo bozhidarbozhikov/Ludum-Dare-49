@@ -29,6 +29,8 @@ public class LevelMaker : MonoBehaviour
                 if (sprite == tiles[i]) PlacePieces(tilePos, i);
             }
         }
+
+        tilemap.transform.GetComponent<TilemapRenderer>().enabled = false;
     }
 
     void PlacePieces(Vector3Int tilePos, int index)

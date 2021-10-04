@@ -9,6 +9,9 @@ public class GoblinShooting : MonoBehaviour
     private float timer;
     public PlayerHealth playerHp;
     public GameObject player;
+    public GameObject arrowPrefab;
+    public Transform firePoint;
+    public float arrowForce;
 
     // Update is called once per frame
     void Update()
@@ -16,12 +19,12 @@ public class GoblinShooting : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= fireRate)
         {
-            if (transform.position.z == player.transform.position.z)
+            if (Mathf.Abs(transform.position.z - player.transform.position.z) < 0.05f)
             {
                 Shoot(player.transform.position);
                 timer = 0f;
             }
-            else if (transform.position.x == player.transform.position.x)
+            else if (Mathf.Abs(transform.position.x - player.transform.position.x) < 0.05f)
             {
                 Shoot(player.transform.position);
                 timer = 0f;
@@ -35,15 +38,22 @@ public class GoblinShooting : MonoBehaviour
 
         if (Physics.Raycast(transform.position, enemyPosition - transform.position, out hit))
         {
-
-            HitEnemy();
-
+            if (hit.transform.CompareTag("Player"))
+            {
+                ShootArrow(enemyPosition);
+            }
         }
     }
 
-    void HitEnemy()
+    void ShootArrow(Vector3 position)
     {
-        playerHp.TakeDamage(damage);
-        Debug.Log("Goblin Hit");
+        GameObject arrow = Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
+
+        arrow.transform.LookAt(position, Vector3.up);
+        arrow.transform.eulerAngles += new Vector3(90, 0, 0);
+
+        Rigidbody rb = arrow.GetComponent<Rigidbody>();
+
+        rb.AddForce((position - firePoint.position).normalized * arrowForce, ForceMode.Impulse);
     }
 }
