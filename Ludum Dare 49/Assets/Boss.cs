@@ -160,9 +160,11 @@ public class Boss : MonoBehaviour
                     }
                 }
                 break;
-            case 4: // SHESTDESET I DEVET
+            case 4: // SHESTDESET I DEVET 69
                 {
-                    List<Vector2> positions69 = new List<Vector2> { new Vector2(3, 0), new Vector2(2, 5), new Vector2(1, 1), new Vector2(1, 3), new Vector2(1, 4), new Vector2(2, 3), new Vector2(2, 4), new Vector2(3, 1), new Vector2(3, 2), new Vector2(4, 1), new Vector2(4, 2), new Vector2(4, 4) };
+                    List<Vector2> positions69 = new List<Vector2> { new Vector2(3, 0), new Vector2(2, 5), 
+                        new Vector2(1, 1), new Vector2(1, 3), new Vector2(1, 4), new Vector2(2, 3), new Vector2(2, 4),
+                        new Vector2(3, 1), new Vector2(3, 2), new Vector2(4, 1), new Vector2(4, 2), new Vector2(4, 4) };
 
                     for (int i = 0; i < gridX; i++)
                     {
