@@ -8,7 +8,6 @@ public class PlayerHealth : MonoBehaviour
     private int currentHealth;
 
     public MeshRenderer meshRenderer;
-    public Material wizardMat;
     public Material hitMat;
 
     private void OnEnable()
@@ -32,11 +31,13 @@ public class PlayerHealth : MonoBehaviour
 
     IEnumerator Blink()
     {
+        Material oldMat = meshRenderer.material;
+
         meshRenderer.material = hitMat;
 
         yield return new WaitForSeconds(0.1f);
 
-        meshRenderer.material = wizardMat;
+        meshRenderer.material = oldMat;
     }
 
     private void Die()

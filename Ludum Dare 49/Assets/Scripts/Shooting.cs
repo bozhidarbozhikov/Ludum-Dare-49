@@ -22,8 +22,11 @@ public class Shooting : MonoBehaviour
     public float castSpellDuration;
 
     public GameObject fireballPrefab;
-    public GameObject plant;
     public GameObject rainCloudPrefab;
+    public GameObject lightUp;
+    public Material lightMat;
+    public Material playerMat;
+    public GameObject plant;
 
     // Start is called before the first frame update
     void Start()
@@ -195,7 +198,7 @@ public class Shooting : MonoBehaviour
 
         int randomEffect = Random.Range(0, 12);
 
-        int testInt = 1;
+        int testInt = 11;
 
         switch (randomEffect)
         {
@@ -209,7 +212,7 @@ public class Shooting : MonoBehaviour
                 {
                     if (enemy.name == "Evil Wizard")
                     {
-
+                        StartCoroutine(FindObjectOfType<Boss>().Petrify(castSpellDuration));
                     }
                     else
                     {
@@ -228,7 +231,7 @@ public class Shooting : MonoBehaviour
                 break;
             case 3:
                 {
-
+                    //Deal contact damage
                 }
                 break;
             case 4:
@@ -270,12 +273,12 @@ public class Shooting : MonoBehaviour
                 break;
             case 10:
                 {
-
+                    //Detect thoughts
                 }
                 break;
             case 11:
                 {
-
+                    StartCoroutine(LightUp());
                 }
                 break;
             default:
@@ -308,6 +311,8 @@ public class Shooting : MonoBehaviour
 
     IEnumerator CastBlink()
     {
+        cast.parent = firePoint;
+
         for (int i = 0; i < castChangeTimes; i++)
         {
             yield return new WaitForSeconds(castGFXDuration);
@@ -320,6 +325,29 @@ public class Shooting : MonoBehaviour
         }
 
         cast.gameObject.SetActive(false);
+
+        cast.parent = null;
+
+    }
+
+    IEnumerator LightUp()
+    {
+        lightUp.SetActive(true);
+        GetComponent<MeshRenderer>().material = lightMat;
+
+        float timer = 0f;
+
+        while (timer < castSpellDuration)
+        {
+            lightUp.transform.position = transform.position;
+
+            yield return null;
+
+            timer += Time.deltaTime;
+        }
+
+        lightUp.SetActive(false);
+        GetComponent<MeshRenderer>().material = playerMat;
     }
 
     IEnumerator TurnIntoPlant()

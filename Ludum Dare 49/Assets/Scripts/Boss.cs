@@ -6,6 +6,7 @@ public class Boss : MonoBehaviour
 {
     public Transform player;
     public GameObject hitMarkerPrefab;
+    public GameObject firePrefab;
 
     public List<Vector3> possiblePositions;
     Vector3 movePoint;
@@ -15,6 +16,12 @@ public class Boss : MonoBehaviour
 
     public Vector3[,] battleGrid;
     GameObject[,] hitMarkers;
+    GameObject[,] fires;
+    public Texture fire1;
+    public Texture fire2;
+    public Material fireMat;
+    public float fireFrameLength;
+    public float fireDuration;
 
     public bool canMove = true;
     public int gridX;
@@ -31,7 +38,7 @@ public class Boss : MonoBehaviour
 
     private void Update()
     {
-        transform.position = Vector3.MoveTowards(movePoint, movePoint, moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, movePoint, moveSpeed * Time.deltaTime);
     }
 
     void MakeGrid()
@@ -47,18 +54,24 @@ public class Boss : MonoBehaviour
         }
 
         hitMarkers = new GameObject[gridX, gridY];
+        fires = new GameObject[gridX, gridY];
 
         for (int i = 0; i < gridX; i++)
         {
             for (int j = 0; j < gridY; j++)
             {
-                GameObject hitMarker = Instantiate(hitMarkerPrefab, battleGrid[i, j], Quaternion.Euler(90, 0, 0));
+                GameObject hitMarker = Instantiate(hitMarkerPrefab, bottomLeftGrid + new Vector3(i, 0, j), Quaternion.Euler(90, 0, 0));
                 hitMarkers[i, j] = hitMarker;
                 hitMarker.GetComponent<HitMarker>().SetUpNoDestroy(bottomLeftGrid + new Vector3(i, 0, j));
                 hitMarker.GetComponent<MeshRenderer>().enabled = false;
+
+                GameObject fire = Instantiate(firePrefab, bottomLeftGrid + new Vector3(i, 1.33f, j), Quaternion.identity);
+                fires[i, j] = fire;
+                fire.SetActive(false);
             }
         }
 
+        StartCoroutine(FireAnimate());
     }
 
     IEnumerator PickRandomPosition()
@@ -69,7 +82,6 @@ public class Boss : MonoBehaviour
         _possiblePositions.Remove(movePoint);
 
         movePoint = _possiblePositions[Random.Range(0, _possiblePositions.Count)];
-
         yield return new WaitForSeconds(stayAtPositionTime * 0.75f);
 
         StartCoroutine(MakeRandomAttack());
@@ -87,7 +99,7 @@ public class Boss : MonoBehaviour
 
         int pattern = Random.Range(0, 7);
 
-        int testValue = 2;
+        //int testValue = 2;
 
         switch (pattern)
         {
@@ -99,7 +111,7 @@ public class Boss : MonoBehaviour
                         {
                             if ((i + j) % 2 == 0)// && j % 2 == 0)
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -115,7 +127,7 @@ public class Boss : MonoBehaviour
                         {
                             if ((i + j) % 2 == 1)// && j % 2 == 0)
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -134,7 +146,7 @@ public class Boss : MonoBehaviour
 
                         for (int j = 0; j < gridY; j++)
                         {
-                            StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                            AttackOnTile(i, j);
 
                             attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
 
@@ -152,7 +164,7 @@ public class Boss : MonoBehaviour
                             {
                                 continue;
                             }
-                            StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                            AttackOnTile(i, j);
 
                             attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
 
@@ -172,7 +184,7 @@ public class Boss : MonoBehaviour
                         {
                             if (!positions69.Contains(new Vector2(i, j)))
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -188,7 +200,7 @@ public class Boss : MonoBehaviour
                         {
                             if (i % 2 == 0 && j % 2 == 0)
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -206,7 +218,7 @@ public class Boss : MonoBehaviour
                         {
                             if (centur.Contains(new Vector2(i, j)))
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -222,7 +234,7 @@ public class Boss : MonoBehaviour
                         {
                             if (!(i > 0 && i < gridX - 1 && j > 0 && j < gridY - 1))
                             {
-                                StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+                                AttackOnTile(i, j);
 
                                 attackedPositions.Add(new Vector3(i, 0, j) + bottomLeftGrid);
                             }
@@ -240,6 +252,32 @@ public class Boss : MonoBehaviour
         {
             player.GetComponent<PlayerHealth>().TakeDamage(1);
         }
+    }
+
+    void AttackOnTile(int i, int j)
+    {
+
+        StartCoroutine(hitMarkers[i, j].GetComponent<HitMarker>().Show(1));
+        StartCoroutine(fires[i, j].GetComponent<FirePoint>().Show(1, fireDuration));
+    }
+
+    public IEnumerator Petrify(float duration)
+    {
+        canMove = false;
+
+        yield return new WaitForSeconds(duration);
+
+        canMove = true;
+    }
+
+    IEnumerator FireAnimate()
+    {
+        if (fireMat.mainTexture == fire1) fireMat.mainTexture = fire2;
+        else fireMat.mainTexture = fire1;
+
+        yield return new WaitForSeconds(fireFrameLength);
+
+        StartCoroutine(FireAnimate());
     }
 
     private void OnDrawGizmosSelected()

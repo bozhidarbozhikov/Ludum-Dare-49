@@ -59,7 +59,8 @@ public class Pathfinding : MonoBehaviour
 
     private void FixedUpdate()
     {
-        FindPath(seeker.position, target.position);
+        if (canMove)
+            FindPath(seeker.position, target.position);
     }
 
     IEnumerator FollowPath()

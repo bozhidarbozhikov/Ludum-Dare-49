@@ -12,6 +12,9 @@ public class LevelMaker : MonoBehaviour
 
     public GameObject[] objects;
 
+    [HideInInspector]
+    public bool madeLevel = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +34,7 @@ public class LevelMaker : MonoBehaviour
         }
 
         tilemap.transform.GetComponent<TilemapRenderer>().enabled = false;
+        madeLevel = true;
     }
 
     void PlacePieces(Vector3Int tilePos, int index)
